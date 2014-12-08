@@ -28,8 +28,9 @@ class DateTimeNode extends Node
                 $value = new \DateTime($value);
             } catch (\Exception $e) {
                 throw new Exception(sprintf(
-                    "Failed to parse \\DateTime from '%s'",
-                    $value
+                    "Failed to parse \\DateTime from '%s' in %s",
+                    $value,
+                    $this->getPath()
                 ));
             }
         }

@@ -15,12 +15,12 @@ use Structr\Exception;
 class MapNode extends Node
 {
     /**
-     * @var array Keys currently registered for this map
+     * @var MapKeyNode[] $_keys Keys currently registered for this map
      */
     private $_keys = array();
     
     /**
-     * @var string A regular expression to match certain keys
+     * @var MapKeyNode[] A regular expression to match certain keys
      */
     private $_regexp_keys = array();
     
@@ -43,10 +43,10 @@ class MapNode extends Node
      */
     public function key($keyname)
     {
-        $this->_keys[$keyname] = new MapKeyNode($this);
-        $this->_keys[$keyname]->setName($keyname);
+        $this->_keys[$keyname] = $key = new MapKeyNode($this);
+        $key->setName($keyname);
 
-        return $this->_keys[$keyname];
+        return $key;
     }
 
     /**
@@ -134,8 +134,9 @@ class MapNode extends Node
 
         if (!is_array($value)) {
             throw new Exception(sprintf(
-                "Invalid type '%s', expecting 'map' (associative array)",
-                gettype($value)
+                "Invalid type '%s', expecting 'map' (associative array) in %s",
+                gettype($value),
+                $this->getPath()
             ));
         }
 
@@ -164,7 +165,9 @@ class MapNode extends Node
         foreach ($this->_callable_keys as $callable) {
             foreach (array_keys($value) as $key) {
                 if (call_user_func($callable['callable'], $key)) {
-                    $return[$key] = $callable['node']->_walk($value[$key]);
+                    /** @var \Structr\Tree\Composite\MapKeyNode $node */
+                    $node = $callable['node'];
+                    $return[$key] = $node->_walk($value[$key]);
                     unset($value[$key]);
                 }
             }
@@ -172,8 +175,9 @@ class MapNode extends Node
 
         if ($this->_strict && count($value)) {
             throw new Exception(sprintf(
-                'Unexpected key(s) %s',
-                implode(', ', array_keys($value))
+                'Unexpected key(s) %s in %s',
+                implode(', ', array_keys($value)),
+                $this->getPath()
             ));
         }
         

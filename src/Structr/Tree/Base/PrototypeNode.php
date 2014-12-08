@@ -9,7 +9,6 @@
 namespace Structr\Tree\Base;
 
 use Structr\Structr;
-use Structr\Tree\RootNode;
 use Structr\Tree\DeferredNode;
 
 use Structr\Tree\Scalar\IntegerNode;

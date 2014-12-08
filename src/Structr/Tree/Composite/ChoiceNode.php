@@ -10,7 +10,6 @@ namespace Structr\Tree\Composite;
 
 use Structr\Tree\Base\Node;
 
-use Structr\Tree\Composite\ChoicePrototypeNode;
 use Structr\Exception;
 
 class ChoiceNode extends Node
@@ -56,7 +55,7 @@ class ChoiceNode extends Node
 
     /**
      * {@inheritdoc}
-     * @throws Structr\Exception
+     * @throws \Structr\Exception
      */
     public function _walk_value($value)
     {
@@ -70,8 +69,9 @@ class ChoiceNode extends Node
         }
 
         throw new Exception(sprintf(
-            "No alternative matching type '%s'",
-            gettype($value)
+            "No alternative matching type '%s' in %s",
+            gettype($value),
+            $this->getPath()
         ));
     }
 

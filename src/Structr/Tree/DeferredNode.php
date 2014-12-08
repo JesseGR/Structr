@@ -18,12 +18,13 @@ class DeferredNode extends Node
      *
      * @param Callable $callable A callable that
      *        returns an instance of \Structr\Tree\Base\Node or \Structr\Tree\RootNode
+     * @throws Exception
      */
     public function __construct($callable)
     {
         if (!is_callable($callable))
         {
-            throw new Exception('Argument to DeferredNode::__construct() must be callable');
+            throw new Exception('Argument to DeferredNode::__construct() must be callable in '.$this->getPath());
         }
         $this->_callable = $callable;
     }
@@ -35,7 +36,7 @@ class DeferredNode extends Node
         if (!($node instanceof Node))
         {
             throw new Exception(
-                'Callable supplied to is() must return an instance of \Structr\Tree\Base\Node'
+                'Callable supplied to is() must return an instance of \Structr\Tree\Base\Node in '.$this->getPath()
             );
         }
         return $node->root()->_walk_value($value);

@@ -34,7 +34,7 @@ abstract class ScalarNode extends Node
      * 
      * @param mixed $value The value to be coerced
      * @return mixed Coercion result
-     * @throws Structr\Exception
+     * @throws \Structr\Exception
      */
     protected function coerceValue($value) {
         if ($this->_coerce === false) {
@@ -55,9 +55,10 @@ abstract class ScalarNode extends Node
         $typeok = $this->setType($value);
         if ($this->_coerceStrict && !$typeok) {
             throw new Exception(sprintf(
-                "Can't coerce '%s' to '%s'",
+                "Can't coerce '%s' to '%s' in %s",
                 $type,
-                $this->getScalarType()
+                $this->getScalarType(),
+                $this->getPath()
             ));
         }
 
@@ -120,9 +121,10 @@ abstract class ScalarNode extends Node
         }
 
         throw new Exception(sprintf(
-            "Invalid type for '%s', expecting '%s'",
+            "Invalid type for '%s', expecting '%s' in %s",
             gettype($value),
-            $this->getScalarType()
+            $this->getScalarType(),
+            $this->getPath()
         ));
     }
 }

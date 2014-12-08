@@ -109,12 +109,12 @@ class StringNode extends ScalarNode
      * (if any)
      * 
      * @param string $value The value to check
-     * @throws Structr\Exception
+     * @throws \Structr\Exception
      */
     protected function checkRegexp($value)
     {
         if ($this->_regexp !== null && !preg_match($this->_regexp, $value)) {
-            throw new Exception('String did not match regular expression');
+            throw new Exception('String did not match regular expression in '.$this->getPath());
         }
     }
     
@@ -122,7 +122,7 @@ class StringNode extends ScalarNode
      * Check if the value if part of the enum for this node (if any)
      * 
      * @param string $value The value to check
-     * @throws Structr\Exception
+     * @throws \Structr\Exception
      */
     protected function checkEnum($value)
     {
@@ -135,7 +135,7 @@ class StringNode extends ScalarNode
             }
             
             if (!in_array($value, $enum)) {
-                throw new Exception("'{$value}' not part of enum");
+                throw new Exception("'{$value}' not part of enum [".implode(',', $this->_enum)."] in ".$this->getPath());
             }
         }
     }

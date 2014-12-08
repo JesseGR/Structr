@@ -9,6 +9,7 @@
 namespace Structr\Tree\Base;
 
 use \Structr\Exception;
+use Structr\Tree\Composite\MapKeyNode;
 
 /**
  * Basic node functionality for Structr
@@ -65,16 +66,17 @@ abstract class Node
      * 
      * @param string $id The id to store the node in
      * @param \Structr\Tree\Base\Node $value The Node to store for this ID
-     * @throws Structr\Exception
+     * @throws \Exception
      */
     protected function registerId($id, $value)
     {
         if ($this->_parent !== null) {
-            return $this->root()->registerId($id, $value);
+            $this->root()->registerId($id, $value);
+            return;
         }
 
         if (isset($this->_registeredIds[$id])) {
-            throw new Exception("Duplicate id '$id'");
+            throw new Exception("Duplicate id '$id' in ".$this->getPath());
         }
 
         $this->_registeredIds[$id] = $value;
@@ -138,14 +140,14 @@ abstract class Node
      *
      * @param mixed $callable A valid PHP callable
      * @throws \Structr\Exception
-     * @return \Structr\Tree\Base\Node This node
+     * @return $this
      */
     public function pre($callable)
     {
         if (is_callable($callable, false)) {
             $this->_pre[] = $callable;
         } else {
-           throw new Exception('Invalid callable supplied to Node::pre()');
+           throw new Exception('Invalid callable supplied to Node::pre() in '.$this->getPath());
         }
 
         return $this;
@@ -166,7 +168,7 @@ abstract class Node
         if (is_callable($callable, false)) {
             $this->_post[] = $callable;
         } else {
-           throw new Exception('Invalid callable supplied to Node::post()');
+           throw new Exception('Invalid callable supplied to Node::post() in'.$this->getPath());
         }
 
         return $this;
@@ -189,7 +191,7 @@ abstract class Node
     /**
      * End the current node and go back to the parent
      * 
-     * @return \Structr\Tree\Base\Node the parent of this node
+     * @return \Structr\Tree\Base\Node|\Structr\Tree\Composite\MapKeyNode the parent of this node
      */
     public function end()
     {
@@ -280,5 +282,29 @@ abstract class Node
     protected function getValue()
     {
         return null;
+    }
+
+    /**
+     * Get the current position in the structr tree
+     *
+     * @return string
+     */
+    public function getPath()
+    {
+        $path = '';
+        $parent = $this->parent();
+        if ($parent->parent())
+        {
+            $path .= $parent->getPath();
+        }
+        $tags = explode('\\', get_class($this));
+        $tag = substr(end($tags), 0, -4);
+        $path .= $tag;
+
+        if ($parent instanceof MapKeyNode)
+        {
+            $path .= sprintf(':%s', $parent->getName());
+        }
+        return $path . '/';
     }
 }

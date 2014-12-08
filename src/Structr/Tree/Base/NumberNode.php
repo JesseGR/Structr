@@ -8,8 +8,6 @@
 
 namespace Structr\Tree\Base;
 
-use Structr\Tree\Base\ScalarNode;
-
 use Structr\Exception;
 
 /**
@@ -124,7 +122,7 @@ abstract class NumberNode extends ScalarNode
     {
         if ($high <= $low) {
             throw new Exception(
-                'Low value must be stricly lower than high value for clamping'
+                'Low value must be stricly lower than high value for clamping'.$this->getPath()
             );
         }
         $this->gte($low, true);
@@ -147,7 +145,7 @@ abstract class NumberNode extends ScalarNode
 
     /**
      * {@inheritdoc}
-     * @throws Structr\Exception
+     * @throws \Structr\Exception
      */
     public function _walk_value($value)
     {
@@ -166,7 +164,7 @@ abstract class NumberNode extends ScalarNode
      * 
      * @param number $value The value to check
      * @return number
-     * @throws Structr\Exception
+     * @throws \Structr\Exception
      */
     protected function checkGte($value)
     {
@@ -185,7 +183,7 @@ abstract class NumberNode extends ScalarNode
      * 
      * @param number $value The value to check
      * @return number
-     * @throws Structr\Exception
+     * @throws \Structr\Exception
      */
     protected function checkLte($value)
     {
@@ -203,7 +201,7 @@ abstract class NumberNode extends ScalarNode
      * Check that the value is within bounds (greater than)
      * 
      * @param number $value The value to check
-     * @throws Structr\Exception
+     * @throws \Structr\Exception
      */
     protected function checkGt($value)
     {
@@ -216,7 +214,7 @@ abstract class NumberNode extends ScalarNode
      * Check that the value is within bounds (less than)
      * 
      * @param number $value The value to check
-     * @throws Structr\Exception
+     * @throws \Structr\Exception
      */
     protected function checkLt($value)
     {
@@ -228,28 +226,30 @@ abstract class NumberNode extends ScalarNode
     /**
      * Error: the value is too high
      * 
-     * @throws Structr\Exception
+     * @throws \Structr\Exception
      */
     protected function tooHigh($value, $max)
     {
          throw new Exception(sprintf(
-            "Value '%s' is higher than allowed (%f)",
+            "Value '%s' is higher than allowed (%f) in %s",
             $value,
-            $max
+            $max,
+            $this->getPath()
         ));
     }
     
     /**
      * Error: the value is too low
      * 
-     * @throws Structr\Exception
+     * @throws \Structr\Exception
      */
     protected function tooLow($value, $min)
     {
         throw new Exception(sprintf(
-            "Value '%s' is lower than allowed (%f)",
+            "Value '%s' is lower than allowed (%f) in %s",
             $value,
-            $min
+            $min,
+            $this->getPath()
         ));
     }
 }

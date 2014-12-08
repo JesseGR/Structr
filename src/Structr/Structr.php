@@ -8,8 +8,6 @@
 
 namespace Structr;
 
-use Structr\Exception;
-
 use Structr\Tree\RootNode;
 
 /**
@@ -38,9 +36,9 @@ class Structr
     /**
      * Sturctr::ize a given JSON encode variable
      *
-     * @param type $json A JSON encode variable
+     * @param string $json A JSON encode variable
      * @return \Structr\Tree\RootNode A RootNode to start the Structr tree with
-     * @throws Structr\Exception
+     * @throws \Structr\Exception
      */
     public static function izeJson($json)
     {
@@ -132,9 +130,9 @@ class Structr
     /**
      * Get a Structr object that was defined earlier
      *
-     * @param type $name The name of definition to find
+     * @param string $name The name of definition to find
      * @return \Structr\Tree\RootNode The earlier defined Structr tree
-     * @throws Structr\Exception
+     * @throws \Structr\Exception
      */
     public static function getDefinition($name)
     {
@@ -148,8 +146,8 @@ class Structr
     /**
      * Find Structr objects matching a search string
      *
-     * @param type $searchString The string used to find definitions
-     * @return type array An array of definitions matching $searchString
+     * @param string $searchString The string used to find definitions
+     * @return \Structr\Tree\RootNode[] An array of definitions matching $searchString
      */
     public static function getDefinitions($searchString)
     {
@@ -163,6 +161,7 @@ class Structr
                 if (!empty($match['other'])) {
                     return preg_quote($match['other'], '/');
                 }
+                return '';
             },
             $searchString
         );
@@ -192,7 +191,7 @@ class Structr
      *
      * @param string $value The value to decode
      * @return array A json_decode'd version of the input
-     * @throws Structr\Exception
+     * @throws \Structr\Exception
      */
     public static function json_decode($value)
     {
@@ -212,7 +211,7 @@ class Structr
                 case JSON_ERROR_CTRL_CHAR:
                     throw new Exception('Control character error, possibly incorrectly encoded');
                 case JSON_ERROR_SYNTAX:
-                    throw new Exception('Syntax error');
+                    throw new Exception('JSON Syntax error');
                 case JSON_ERROR_UTF8:
                     throw new Exception('Malformed UTF-8 characters, possibly incorrectly encoded');
                 default:

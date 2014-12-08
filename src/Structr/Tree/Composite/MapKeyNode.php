@@ -97,7 +97,7 @@ class MapKeyNode extends PrototypeNode
     /**
      * Jump back to the parent
      * 
-     * @return \Structr\Tree\Base\Node the parent node
+     * @return \Structr\Tree\Composite\MapNode the parent node
      */
     public function endKey()
     {
@@ -109,14 +109,15 @@ class MapKeyNode extends PrototypeNode
      * required, set it to the default value.
      * 
      * @return string The default value, in case this node is not required
-     * @throws Structr\Exception
+     * @throws \Structr\Exception
      */
     public function _walk_value_unset()
     {
         if ($this->_required) {
             throw new Exception(sprintf(
-                "Missing key '%s'",
-                $this->_name
+                "Missing key '%s' in %s",
+                $this->_name,
+                $this->getPath()
             ));
         }
 
